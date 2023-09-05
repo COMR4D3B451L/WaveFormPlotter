@@ -7,14 +7,24 @@
 <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 
-<div>
-    <button _="on click toggle .hidden on logcontainer then toggle .hidden on chartcontainer" type="button"
-            class="inline-block rounded bg-slate-600 hover:bg-slate-500 px-6 py-2 text-white">
+<div class="flex">
+    <button id="logbutton" _="on click toggle .hidden on logcontainer then toggle .hidden on chartcontainer then toggle .hidden on backbutton then toggle .hidden on me" type="button"
+            class="inline-block rounded bg-slate-600 hover:bg-slate-500 px-6 py-2 mx-2 text-white">
         Show Logarithmic Scale
+    </button>
+    <button id="backbutton" _="on click toggle .hidden on logcontainer then toggle .hidden on chartcontainer then toggle .hidden on logbutton then toggle .hidden on me" type="button"
+            class="hidden inline-block rounded bg-slate-600 hover:bg-slate-500 px-6 py-2 mx-2 text-white">
+        Back
     </button>
 </div>
 <div id="chartcontainer">
     <div class="flex w-full" id="waveformChart"></div>
+    <h1>Reference Signal</h1>
+    <div class="flex w-full" id="referenceChart"></div>
+    <h1>Trimmed Signal</h1>
+    <div class="flex w-full" id="trimmedChart"></div>
+    <h1>Record Signal</h1>
+    <div class="flex w-full" id="recordChart"></div>
 </div>
 <div id="logcontainer" class="w-full hidden">
     <div class="flex w-full" id="LogWaveformChart"></div>
@@ -23,12 +33,14 @@
 
 <script>
     // get the sample data from the ViewData dictionary
-    var samples1 = @Html.Raw(Json.Serialize(ViewData["RecordSamples"]));
-    var samples2 = @Html.Raw(Json.Serialize(ViewData["SourceSamples"]));
+    var samples1 = @Html.Raw(Json.Serialize(ViewData["Recorded"]));
+    var samples2 = @Html.Raw(Json.Serialize(ViewData["Trimmed"]));
+    var samples3 = @Html.Raw(Json.Serialize(ViewData["Reference"]));
 
     // create an array of indices for the x values
     var indices1 = Array.from(Array(samples1.length).keys());
     var indices2 = Array.from(Array(samples2.length).keys());
+    var indices3 = Array.from(Array(samples3.length).keys());
 
     var layout = {
         yaxis: {
@@ -40,7 +52,7 @@
         x: indices1,
         y: samples1,
         type: 'scatter',
-        name: 'Source file',
+        name: 'Recorded',
         marker: { size: 10 }
     };
 
@@ -49,13 +61,29 @@
         x: indices2,
         y: samples2,
         type: 'scatter',
-        name: 'Recording',
+        name: 'Trimmed',
         marker: { size: 10 }
 
     };
 
-    var data = [trace, trace2];
+    var trace3 = {
+
+        x: indices3,
+        y: samples3,
+        type: 'scatter',
+        name: 'Reference',
+        marker: { size: 10 }
+
+    };
+
+    var data = [trace3, trace2];
+    var recordedData = [trace];
+    var trimmedData = [trace2];
+    var referenceData = [trace3];
 
     Plotly.newPlot('waveformChart', data);
+    Plotly.newPlot('recordChart', recordedData);
+    Plotly.newPlot('trimmedChart', trimmedData);
+    Plotly.newPlot('referenceChart', referenceData);
     Plotly.newPlot('LogWaveformChart', data, layout);
 </script>

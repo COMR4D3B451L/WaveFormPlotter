@@ -3,7 +3,7 @@ using NAudio.Wave;
 using System.Diagnostics;
 using WaveFormPlotter.Models;
 
-namespace WebApplication1.Controllers
+namespace WaveFormPlotter.Controllers
 {
     public class HomeController : Controller
     {
@@ -17,12 +17,14 @@ namespace WebApplication1.Controllers
         public IActionResult Index()
         {
             // path to the audio file
-            string filePath = @"C:\Users\basil\Documents\10khz.wav";
-            string recordPath = @"C:\Users\basil\Documents\Recording.wav";
+            string recordedPath = @"C:\Users\basila\Desktop\Pixel_recording_SNR_10kzh_1.5s_48_16bit_mono.wav";
+            string trimmedPath = @"C:\Users\basila\Desktop\output.wav";
+            string referencePath = @"C:\Users\basila\Desktop\SNR_10kzh_1.5s_48_16bit_mono.wav";
 
             // read the audio file
-            ViewData["SourceSamples"] = ChangeFileToSamples(filePath);
-            ViewData["RecordSamples"] = ChangeFileToSamples(recordPath);
+            ViewData["Recorded"] = ChangeFileToSamples(recordedPath);
+            ViewData["Trimmed"] = ChangeFileToSamples(trimmedPath);
+            ViewData["Reference"] = ChangeFileToSamples(referencePath);
 
             return View();
         }
